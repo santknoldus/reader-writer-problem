@@ -5,24 +5,25 @@ import java.util.concurrent.locks.ReentrantReadWriteLock
 class ReaderWriterLock {
   private val lock = new ReentrantReadWriteLock(true)
 
-  def withReadLock[T](block: => T): Unit = {
+  def withReadLock(read: => Unit): Unit = {
     val readLock = lock.readLock()
     readLock.lock()
     try {
-      block
+      read
     } finally {
       readLock.unlock()
+      println("Reader thread unlocked")
     }
   }
 
-  def withWriterLock[T](block: => T): Unit = {
+  def withWriterLock(write: => Unit): Unit = {
     val writerLock = lock.writeLock()
     writerLock.lock()
     try {
-      block
+      write
     } finally {
       writerLock.unlock()
+      println("Writer thread unlocked")
     }
   }
-
 }
